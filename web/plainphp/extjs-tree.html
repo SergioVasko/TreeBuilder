@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ExtJS tree</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="./extjs/resources/css/ext-all.css">
+    <script type="text/javascript" src="./extjs/ext-all.js"></script>
+    <!--link rel="stylesheet" type="text/css" href="./extjs-4.1.1/resources/css/ext-all.css">
+    <script type="text/javascript" src="./extjs-4.1.1/ext-all.js"></script-->
+    <script type="text/javascript">
+    Ext.onReady(function(){
+        Ext.define('Categories', {
+            extend: 'Ext.data.Model',
+            fields: [
+                { name: 'id', type: 'int' },
+                { name: 'node_name', type: 'string' },
+                { name: 'children' }, 
+                { name: 'leaf', convert : 
+                    function(value, record) {
+                        return typeof record.get('children') !== 'object';
+                    }
+                }
+            ],
+            proxy:{
+                type: 'ajax',
+                url: 'build-tree.php'
+            }
+        });
+
+        var store = Ext.create('Ext.data.TreeStore', {
+            model: 'Categories'
+        });
+
+        Ext.create('Ext.tree.Panel', {
+            renderTo: Ext.get('tree'),
+            width: 200,
+            height: 300,
+            title: 'Wallmart',
+            store: store,
+            rootVisible: false,
+            columns: [
+                { xtype: 'treecolumn', header: 'Departments', dataIndex: 'node_name', flex: 1 }
+            ]
+        });
+    });
+    </script>
+</head>
+<body>
+	<h1>ExtJS tree</h1>
+	<div id="tree"></div>
+</body>
+</html>
